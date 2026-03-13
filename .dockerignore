@@ -1,0 +1,53 @@
+# =============================================================================
+# GeoView Suite - Docker Ignore
+# =============================================================================
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Test files
+tests/
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Database files (persisted via volumes, not baked into images)
+*.db
+*.sqlite
+*.sqlite3
+
+# Version control
+.git/
+.gitignore
+
+# Documentation
+*.md
+docs/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Docker meta (avoid recursive context)
+docker-compose.yml
+Dockerfile.template
+docker-start.*
+docker-stop.*
+.dockerignore
+
+# Data directory (mounted as volume)
+data/
+
+# Screenshots
+screenshots/
