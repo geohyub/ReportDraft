@@ -123,14 +123,14 @@
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-dark py-3">
+    <nav class="navbar navbar-dark py-3" style="background: var(--gv-dark);">
         <div class="container">
             <span class="navbar-brand d-flex align-items-center gap-2">
                 <i class="bi bi-file-earmark-word"></i>
-                ProcessingReportDraft
+                <span class="gradient-text">ProcessingReportDraft</span>
                 <span class="badge bg-white bg-opacity-25 fw-normal ms-2" style="font-size: 0.75rem;">v3.0</span>
             </span>
-            <span class="text-white-50 d-none d-md-inline" style="font-size: 0.9rem;">
+            <span class="text-dim d-none d-md-inline" style="font-size: 0.9rem;">
                 <i class="bi bi-water me-1"></i> 처리보고서 초안 생성기
             </span>
         </div>
@@ -166,7 +166,7 @@
                                 <div class="card data-type-card sbp-card selected" data-type="SBP" onclick="selectDataType(this, 'SBP')">
                                     <div class="icon-circle"><i class="bi bi-soundwave"></i></div>
                                     <div class="fw-bold">SBP</div>
-                                    <small class="text-muted">Sub-Bottom Profiler</small>
+                                    <small class="text-dim">Sub-Bottom Profiler</small>
                                     <div class="mt-1"><span class="badge bg-secondary">10 steps</span></div>
                                 </div>
                             </div>
@@ -174,7 +174,7 @@
                                 <div class="card data-type-card uhr-card" data-type="UHR" onclick="selectDataType(this, 'UHR')">
                                     <div class="icon-circle"><i class="bi bi-activity"></i></div>
                                     <div class="fw-bold">UHR</div>
-                                    <small class="text-muted">Ultra-High Resolution</small>
+                                    <small class="text-dim">Ultra-High Resolution</small>
                                     <div class="mt-1"><span class="badge bg-secondary">12 steps</span></div>
                                 </div>
                             </div>
@@ -182,7 +182,7 @@
                                 <div class="card data-type-card mbes-card" data-type="MBES" onclick="selectDataType(this, 'MBES')">
                                     <div class="icon-circle"><i class="bi bi-tsunami"></i></div>
                                     <div class="fw-bold">MBES</div>
-                                    <small class="text-muted">Multibeam Echo Sounder</small>
+                                    <small class="text-dim">Multibeam Echo Sounder</small>
                                     <div class="mt-1"><span class="badge bg-secondary">9 steps</span></div>
                                 </div>
                             </div>
@@ -190,7 +190,7 @@
                                 <div class="card data-type-card mag-card" data-type="MAG" onclick="selectDataType(this, 'MAG')">
                                     <div class="icon-circle"><i class="bi bi-magnet"></i></div>
                                     <div class="fw-bold">MAG</div>
-                                    <small class="text-muted">Magnetics</small>
+                                    <small class="text-dim">Magnetics</small>
                                     <div class="mt-1"><span class="badge bg-secondary">10 steps</span></div>
                                 </div>
                             </div>
@@ -198,7 +198,7 @@
                                 <div class="card data-type-card sss-card" data-type="SSS" onclick="selectDataType(this, 'SSS')">
                                     <div class="icon-circle"><i class="bi bi-broadcast-pin"></i></div>
                                     <div class="fw-bold">SSS</div>
-                                    <small class="text-muted">Side Scan Sonar</small>
+                                    <small class="text-dim">Side Scan Sonar</small>
                                     <div class="mt-1"><span class="badge bg-secondary">9 steps</span></div>
                                 </div>
                             </div>
@@ -375,7 +375,7 @@ Software: RadExPro 2024.4
 
             <!-- Export Bar -->
             <div class="export-bar" id="exportBar">
-                <span class="text-muted me-2 d-flex align-items-center" style="font-size:0.85rem;">
+                <span class="text-dim me-2 d-flex align-items-center" style="font-size:0.85rem;">
                     <i class="bi bi-download me-1"></i> 내보내기:
                 </span>
                 <button class="btn btn-success btn-sm" onclick="downloadReport()">
@@ -593,7 +593,7 @@ Software: RadExPro 2024.4
             container.innerHTML = '';
 
             if (!steps || steps.length === 0) {
-                container.innerHTML = '<div class="text-muted text-center py-4">처리 단계가 없습니다.</div>';
+                container.innerHTML = '<div class="text-dim text-center py-4">처리 단계가 없습니다.</div>';
                 return;
             }
 
