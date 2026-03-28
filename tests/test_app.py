@@ -48,6 +48,10 @@ def test_api_template_sbp(client):
     assert data["data_type"] == "SBP"
     assert data["project_name"] == "Test Project"
     assert len(data["steps"]) > 0
+    assert "context" in data
+    assert "statistics" in data
+    assert "validation" in data
+    assert data["steps"][0]["stage"] == "Input & Geometry"
 
 
 def test_api_template_uhr(client):
@@ -340,6 +344,33 @@ def test_api_update_step(client):
     assert data["steps"][0]["description"] == "new desc"
 
 
+def test_api_update_step_story_fields(client):
+    payload = {
+        "flow": {
+            "project_name": "Test",
+            "data_type": "SBP",
+            "steps": [
+                {"order": 1, "name": "Old Name", "description": "old desc", "parameters": {}},
+            ],
+        },
+        "order": 1,
+        "stage": "Signal Conditioning",
+        "rationale": "Reduce incoherent noise before interpretation.",
+        "qc_focus": "Confirm reflector continuity is preserved.",
+        "expected_output": "Cleaner section for downstream drafting.",
+    }
+    rv = client.post("/api/step/update",
+                     data=json.dumps(payload),
+                     content_type="application/json")
+    assert rv.status_code == 200
+    data = json.loads(rv.data)
+    step = data["steps"][0]
+    assert step["stage"] == "Signal Conditioning"
+    assert step["rationale"] == "Reduce incoherent noise before interpretation."
+    assert step["qc_focus"] == "Confirm reflector continuity is preserved."
+    assert step["expected_output"] == "Cleaner section for downstream drafting."
+
+
 def test_api_compare_flows(client):
     flow1 = {
         "project_name": "Project A",
@@ -366,6 +397,60 @@ def test_api_compare_flows(client):
     assert len(data["added_steps"]) == 1  # Export is new
     assert len(data["removed_steps"]) == 1  # Filter is removed
     assert len(data["modified_steps"]) == 1  # Input has different params
+
+
+def test_api_compare_flows_includes_story_fields(client):
+    flow1 = {
+        "project_name": "Project A",
+        "data_type": "SBP",
+        "steps": [
+            {
+                "order": 1,
+                "name": "Input",
+                "description": "Initial load",
+                "parameters": {"format": "SEG-Y"},
+                "stage": "Input & Geometry",
+                "rationale": "Load source data",
+                "qc_focus": "Header consistency",
+                "expected_output": "Raw traces",
+            },
+        ],
+    }
+    flow2 = {
+        "project_name": "Project A",
+        "data_type": "SBP",
+        "steps": [
+            {
+                "order": 1,
+                "name": "Input",
+                "description": "Initial load",
+                "parameters": {"format": "SEG-Y"},
+                "stage": "Input & Geometry",
+                "rationale": "Load and validate source data",
+                "qc_focus": "Header consistency and navigation mapping",
+                "expected_output": "QC-checked raw traces",
+            },
+            {
+                "order": 2,
+                "name": "Band-pass Filter",
+                "description": "Condition traces",
+                "parameters": {"Type": "Butterworth"},
+                "stage": "Signal Conditioning",
+                "rationale": "Suppress out-of-band noise",
+                "qc_focus": "Preserve reflector continuity",
+                "expected_output": "Cleaner seismic section",
+            },
+        ],
+    }
+    rv = client.post("/api/compare_flows",
+                     data=json.dumps({"flow1": flow1, "flow2": flow2}),
+                     content_type="application/json")
+    assert rv.status_code == 200
+    data = json.loads(rv.data)
+    assert data["added_steps"][0]["stage"] == "Signal Conditioning"
+    assert data["added_steps"][0]["expected_output"] == "Cleaner seismic section"
+    assert data["modified_steps"][0]["old"]["qc_focus"] == "Header consistency"
+    assert data["modified_steps"][0]["new"]["expected_output"] == "QC-checked raw traces"
 
 
 def test_api_save_revision(client):
@@ -398,6 +483,23 @@ def test_api_revision_history(client):
     assert len(data["revisions"]) >= 1
 
 
+def test_api_revision_get(client):
+    client.post("/api/template",
+                data=json.dumps({"data_type": "SBP", "project_name": "Restore Test"}),
+                content_type="application/json")
+    saved = client.post("/api/revision/save",
+                        data=json.dumps({"author": "Test", "changes": "checkpoint"}),
+                        content_type="application/json")
+    version = json.loads(saved.data)["version"]
+
+    rv = client.get(f"/api/revision/{version}")
+    assert rv.status_code == 200
+    data = json.loads(rv.data)
+    assert data["project_name"] == "Restore Test"
+    assert "context" in data
+    assert data["steps"][0]["stage"] == "Input & Geometry"
+
+
 def test_api_step_add_to_empty_flow(client):
     """Adding a step when no flow exists should create one."""
     # Reset the stored flow by posting an empty template
@@ -419,6 +521,32 @@ def test_api_step_add_to_empty_flow(client):
     assert len(data["steps"]) == 1
     assert data["steps"][0]["name"] == "First Step"
     assert data["steps"][0]["order"] == 1
+
+
+def test_api_step_add_story_fields(client):
+    rv = client.post("/api/step/add",
+                     data=json.dumps({
+                         "name": "Custom QC Step",
+                         "description": "Review intermediate output",
+                         "stage": "QC Review",
+                         "rationale": "Catch issues before final export",
+                         "qc_focus": "Check positional consistency",
+                         "expected_output": "Approved intermediate deliverable",
+                         "parameters": {"reviewer": "Lead processor"},
+                         "flow": {
+                             "project_name": "Story Test",
+                             "data_type": "SBP",
+                             "steps": [],
+                         },
+                     }),
+                     content_type="application/json")
+    assert rv.status_code == 200
+    data = json.loads(rv.data)
+    step = data["steps"][0]
+    assert step["stage"] == "QC Review"
+    assert step["rationale"] == "Catch issues before final export"
+    assert step["qc_focus"] == "Check positional consistency"
+    assert step["expected_output"] == "Approved intermediate deliverable"
 
 
 # ── Parameter Validation API Tests ──

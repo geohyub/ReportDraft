@@ -36,6 +36,8 @@ from core import (
     generate_html_report,
     generate_all_templates,
     generate_bulk_docx,
+    build_flow_context,
+    enrich_flow,
 )
 
 
@@ -49,6 +51,8 @@ _revision_tracker = RevisionTracker()
 
 def flow_to_dict(flow):
     """Convert ProcessingFlow to a JSON-serializable dict."""
+    flow = enrich_flow(flow)
+    context = build_flow_context(flow)
     return {
         "project_name": flow.project_name,
         "client": flow.client,
@@ -67,9 +71,16 @@ def flow_to_dict(flow):
                 "name": s.name,
                 "description": s.description,
                 "parameters": s.parameters,
+                "stage": s.stage,
+                "rationale": s.rationale,
+                "qc_focus": s.qc_focus,
+                "expected_output": s.expected_output,
             }
             for s in flow.steps
         ],
+        "statistics": context["statistics"],
+        "validation": context["validation"],
+        "context": context,
     }
 
 
@@ -93,10 +104,14 @@ def dict_to_flow(d):
             name=s.get("name", ""),
             description=s.get("description", ""),
             parameters=s.get("parameters", {}),
+            stage=s.get("stage", ""),
+            rationale=s.get("rationale", ""),
+            qc_focus=s.get("qc_focus", ""),
+            expected_output=s.get("expected_output", ""),
         )
         for i, s in enumerate(d.get("steps", []))
     ]
-    return flow
+    return enrich_flow(flow)
 
 
 @app.route("/")
@@ -251,6 +266,10 @@ def api_add_step():
         description = data.get("description", "")
         parameters = data.get("parameters", {})
         position = data.get("position", None)
+        stage = data.get("stage", "")
+        rationale = data.get("rationale", "")
+        qc_focus = data.get("qc_focus", "")
+        expected_output = data.get("expected_output", "")
 
         # Use provided flow data or stored flow
         if "flow" in data:
@@ -260,7 +279,17 @@ def api_add_step():
         else:
             flow = ProcessingFlow()
 
-        add_custom_step(flow, name, description, parameters, position)
+        add_custom_step(
+            flow,
+            name,
+            description,
+            parameters,
+            position,
+            stage=stage,
+            rationale=rationale,
+            qc_focus=qc_focus,
+            expected_output=expected_output,
+        )
         _last_flow["flow"] = flow
         return jsonify(flow_to_dict(flow))
     except Exception as e:
@@ -344,6 +373,10 @@ def api_update_step():
             name=data.get("name"),
             description=data.get("description"),
             parameters=data.get("parameters"),
+            stage=data.get("stage"),
+            rationale=data.get("rationale"),
+            qc_focus=data.get("qc_focus"),
+            expected_output=data.get("expected_output"),
         )
         _last_flow["flow"] = flow
         return jsonify(flow_to_dict(flow))
@@ -370,11 +403,29 @@ def api_compare_flows():
 
         return jsonify({
             "added_steps": [
-                {"order": s.order, "name": s.name, "description": s.description, "parameters": s.parameters}
+                {
+                    "order": s.order,
+                    "name": s.name,
+                    "description": s.description,
+                    "parameters": s.parameters,
+                    "stage": s.stage,
+                    "rationale": s.rationale,
+                    "qc_focus": s.qc_focus,
+                    "expected_output": s.expected_output,
+                }
                 for s in diff.added_steps
             ],
             "removed_steps": [
-                {"order": s.order, "name": s.name, "description": s.description, "parameters": s.parameters}
+                {
+                    "order": s.order,
+                    "name": s.name,
+                    "description": s.description,
+                    "parameters": s.parameters,
+                    "stage": s.stage,
+                    "rationale": s.rationale,
+                    "qc_focus": s.qc_focus,
+                    "expected_output": s.expected_output,
+                }
                 for s in diff.removed_steps
             ],
             "modified_steps": diff.modified_steps,
@@ -421,6 +472,16 @@ def api_revision_history():
         return jsonify({"revisions": history})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/revision/<int:version>", methods=["GET"])
+def api_revision_get(version):
+    """Return a saved revision snapshot as a flow payload."""
+    try:
+        revision = _revision_tracker.get_revision(version)
+        return jsonify(flow_to_dict(dict_to_flow(revision.flow_snapshot)))
+    except Exception as e:
+        return jsonify({"error": str(e)}), 404
 
 
 @app.route("/api/validate_params", methods=["POST"])
@@ -588,7 +649,7 @@ def api_bulk_download():
         return jsonify({"error": str(e)}), 500
 
 
-def run_server(port=5007, debug=False):
+def run_server(port=5404, debug=False):
     """Run the Flask development server."""
     try:
         from waitress import serve

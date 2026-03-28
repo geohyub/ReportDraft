@@ -119,6 +119,182 @@
         /* Param editor rows */
         .param-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; align-items: center; }
         .param-row input { font-size: 0.88rem; }
+        .eyebrow-label {
+            font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
+            color: var(--gv-cyan); font-weight: 700; margin-bottom: 0.35rem;
+        }
+        .briefing-shell {
+            background: linear-gradient(135deg, rgba(15,23,42,0.92), rgba(17,25,39,0.92));
+            border: 1px solid rgba(59,130,246,0.18);
+        }
+        .briefing-shell h4,
+        .report-preview-card h6 { color: var(--gv-text-bright); }
+        .story-note {
+            margin-top: 0.85rem; padding: 0.85rem 1rem; border-radius: 12px;
+            background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.14);
+            color: var(--gv-text);
+        }
+        .story-subcard {
+            background: var(--gv-dark); border: 1px solid var(--gv-border);
+            border-radius: 12px; padding: 1rem; height: 100%;
+        }
+        .story-subtitle {
+            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em;
+            color: var(--gv-muted); font-weight: 700; margin-bottom: 0.65rem;
+        }
+        .story-list {
+            margin: 0; padding-left: 1rem; color: var(--gv-text);
+        }
+        .story-list li { margin-bottom: 0.5rem; }
+        .stage-chip-row {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem;
+        }
+        .stage-chip {
+            padding: 0.8rem 0.95rem; border-radius: 12px; background: rgba(255,255,255,0.03);
+            border: 1px solid var(--gv-border);
+        }
+        .stage-chip .chip-title {
+            display: block; font-size: 0.82rem; color: var(--gv-text-bright); font-weight: 700;
+        }
+        .stage-chip .chip-meta {
+            display: block; margin-top: 0.2rem; color: var(--gv-muted); font-size: 0.76rem;
+        }
+        .readiness-pill {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 0.65rem 1rem; border-radius: 999px; font-size: 0.82rem;
+            font-weight: 700; text-align: center; min-height: 48px;
+        }
+        .readiness-pill.tone-ok {
+            background: rgba(16,185,129,0.12); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.25);
+        }
+        .readiness-pill.tone-info {
+            background: rgba(6,182,212,0.12); color: #67e8f9; border: 1px solid rgba(6,182,212,0.25);
+        }
+        .readiness-pill.tone-warn {
+            background: rgba(245,158,11,0.12); color: #fde68a; border: 1px solid rgba(245,158,11,0.25);
+        }
+        .report-preview-card {
+            background: linear-gradient(180deg, rgba(25,33,50,0.98), rgba(13,20,32,0.98));
+            border: 1px solid var(--gv-border);
+        }
+        .preview-section {
+            padding-top: 0.9rem; margin-top: 0.9rem; border-top: 1px solid var(--gv-border);
+        }
+        .preview-section:first-child { margin-top: 0.25rem; padding-top: 0; border-top: 0; }
+        .preview-section-title {
+            color: var(--gv-text-bright); font-size: 0.92rem; font-weight: 700; margin-bottom: 0.35rem;
+        }
+        .preview-section-body { color: var(--gv-muted); font-size: 0.88rem; line-height: 1.55; }
+        .template-compare-card {
+            height: 100%; padding: 1rem 1rem 1.1rem; border-radius: 14px;
+            background: var(--gv-slate); border: 1px solid var(--gv-border);
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .template-compare-card:hover {
+            transform: translateY(-2px); border-color: rgba(59,130,246,0.28);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.18);
+        }
+        .template-compare-card.selected {
+            border-color: var(--gv-blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.14);
+            background: linear-gradient(135deg, rgba(37,99,235,0.12), rgba(17,25,39,0.96));
+        }
+        .template-compare-card .compare-type {
+            font-size: 1rem; font-weight: 800; color: var(--gv-text-bright);
+        }
+        .template-compare-card .compare-label {
+            color: var(--gv-cyan); font-size: 0.82rem; margin-top: 0.1rem;
+        }
+        .template-compare-card .compare-focus {
+            color: var(--gv-text); margin: 0.75rem 0 0.5rem; font-size: 0.9rem;
+        }
+        .template-compare-card .compare-software {
+            color: var(--gv-muted); font-size: 0.8rem; margin-bottom: 0.65rem;
+        }
+        .template-compare-card .compare-why {
+            color: var(--gv-muted); font-size: 0.82rem; line-height: 1.5;
+        }
+        .step-stage-badge {
+            display: inline-flex; align-items: center; margin-bottom: 0.55rem;
+            padding: 0.28rem 0.65rem; border-radius: 999px; background: rgba(59,130,246,0.12);
+            color: #93c5fd; font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .step-meta-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 0.65rem; margin-top: 0.8rem;
+        }
+        .step-meta-card {
+            background: var(--gv-dark); border: 1px solid var(--gv-border);
+            border-radius: 10px; padding: 0.75rem 0.85rem;
+        }
+        .step-meta-card .meta-kicker {
+            color: var(--gv-muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em;
+            margin-bottom: 0.3rem;
+        }
+        .step-meta-card .meta-copy {
+            color: var(--gv-text); font-size: 0.85rem; line-height: 1.45;
+        }
+        .compare-caption {
+            color: var(--gv-muted); font-size: 0.84rem;
+        }
+        .compare-deliverables {
+            color: var(--gv-muted); font-size: 0.78rem; margin-top: 0.7rem; line-height: 1.45;
+        }
+        .draft-control-card {
+            background: linear-gradient(135deg, rgba(11, 18, 32, 0.98), rgba(17, 25, 39, 0.98));
+            border: 1px solid rgba(6, 182, 212, 0.14);
+        }
+        .safety-panel,
+        .preset-panel,
+        .revision-panel {
+            background: var(--gv-dark); border: 1px solid var(--gv-border);
+            border-radius: 14px; padding: 1rem; height: 100%;
+        }
+        .panel-title {
+            color: var(--gv-text-bright); font-size: 0.96rem; font-weight: 700; margin-bottom: 0.35rem;
+        }
+        .panel-copy,
+        .inline-status,
+        .preset-summary,
+        .revision-hint {
+            color: var(--gv-muted); font-size: 0.83rem; line-height: 1.55;
+        }
+        .action-cluster {
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .safety-headline {
+            color: var(--gv-text); font-size: 1rem; font-weight: 700; margin-bottom: 0.2rem;
+        }
+        .preview-frame-wrap {
+            border-radius: 16px; overflow: hidden; border: 1px solid var(--gv-border);
+            background: #ffffff; min-height: 720px;
+        }
+        .preview-frame {
+            width: 100%; height: 720px; border: 0; background: #ffffff;
+        }
+        .revision-diff {
+            min-height: 160px; border-radius: 12px; border: 1px solid var(--gv-border);
+            background: rgba(255,255,255,0.02); padding: 0.9rem;
+        }
+        .diff-summary-bar {
+            display: flex; gap: 0.45rem; flex-wrap: wrap; margin-bottom: 0.8rem;
+        }
+        .diff-pill {
+            display: inline-flex; align-items: center; padding: 0.35rem 0.7rem;
+            border-radius: 999px; background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.2);
+            color: #bfdbfe; font-size: 0.76rem; font-weight: 700;
+        }
+        .diff-list {
+            margin: 0; padding-left: 1rem; color: var(--gv-text);
+        }
+        .diff-list li { margin-bottom: 0.55rem; }
+        @media (max-width: 991px) {
+            .preview-frame {
+                height: 560px;
+            }
+            .preview-frame-wrap {
+                min-height: 560px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -245,7 +421,67 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-12">
+                <div class="card p-4 draft-control-card">
+                    <div class="row g-4">
+                        <div class="col-lg-5">
+                            <div class="eyebrow-label">Draft Safety</div>
+                            <div class="safety-panel">
+                                <div class="safety-headline" id="draftSafetyStatus">No autosaved working draft yet.</div>
+                                <div class="panel-copy" id="draftSafetyMeta">
+                                    This browser will keep your working draft and presets locally.
+                                </div>
+                                <div class="action-cluster mt-3">
+                                    <button class="btn btn-outline-primary btn-sm" id="draftRestoreBtn" onclick="restoreAutosavedDraft()" disabled>
+                                        <i class="bi bi-arrow-counterclockwise me-1"></i> Restore Draft
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm" id="draftClearBtn" onclick="clearAutosavedDraft()" disabled>
+                                        <i class="bi bi-trash me-1"></i> Clear Autosave
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('jsonImportInput').click()">
+                                        <i class="bi bi-upload me-1"></i> Import JSON
+                                    </button>
+                                    <input type="file" id="jsonImportInput" accept=".json,application/json" hidden>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-7">
+                            <div class="eyebrow-label">Preset Library</div>
+                            <div class="preset-panel">
+                                <div class="panel-title">Save recurring setups or draft snapshots</div>
+                                <div class="row g-2">
+                                    <div class="col-md-7">
+                                        <input type="text" class="form-control" id="presetName" placeholder="Preset name">
+                                    </div>
+                                    <div class="col-md-5 d-grid">
+                                        <button class="btn btn-primary" type="button" onclick="saveCurrentPreset()">
+                                            <i class="bi bi-bookmark-plus me-1"></i> Save Preset
+                                        </button>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <select class="form-select" id="presetSelect"></select>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="action-cluster">
+                                            <button class="btn btn-outline-primary btn-sm flex-fill" type="button" onclick="loadSelectedPreset()">
+                                                <i class="bi bi-folder2-open me-1"></i> Load
+                                            </button>
+                                            <button class="btn btn-outline-danger btn-sm" type="button" onclick="deleteSelectedPreset()">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="preset-summary mt-3" id="presetSummary">
+                                    Presets can store the selected template, project metadata, and the current working flow.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
                 </div>
+            </div>
             </div>
 
             <!-- Parse Tab -->
@@ -323,6 +559,137 @@ Software: RadExPro 2024.4
 
             <!-- Validation Banner -->
             <div id="validationBanner" style="display:none;"></div>
+
+            <!-- Guided Drafting Story -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-7">
+                    <div class="card p-4 briefing-shell">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
+                            <div class="flex-grow-1">
+                                <div class="eyebrow-label">Guided Drafting</div>
+                                <h4 class="mb-2" id="storyHeadline">선택한 템플릿의 의도와 스토리가 여기에 표시됩니다.</h4>
+                                <p class="text-dim mb-0" id="storySummary">
+                                    처리 흐름이 왜 이 순서인지, 어떤 산출물 스토리를 만들지, 무엇이 아직 비어 있는지 보여줍니다.
+                                </p>
+                            </div>
+                            <div class="readiness-pill tone-info" id="readinessPill">초안 준비 중</div>
+                        </div>
+
+                        <div class="story-note" id="storyWhyTemplate">
+                            템플릿 rationale이 여기에 표시됩니다.
+                        </div>
+
+                        <div class="row g-3 mt-1">
+                            <div class="col-md-6">
+                                <div class="story-subcard">
+                                    <div class="story-subtitle">Recommended Deliverables</div>
+                                    <ul class="story-list" id="deliverablesList">
+                                        <li>선택한 유형의 기본 산출물 가이드가 여기에 표시됩니다.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="story-subcard">
+                                    <div class="story-subtitle">Open Draft Items</div>
+                                    <ul class="story-list" id="openItemsList">
+                                        <li>입력되지 않은 메타데이터와 TBD 항목이 여기에 정리됩니다.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stage-chip-row mt-3" id="stageSummaryRow"></div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="card p-4 report-preview-card">
+                        <div class="eyebrow-label">Output Story Preview</div>
+                        <h6 class="mb-2">화면과 최종 draft가 같은 이야기로 읽히는지 미리 확인</h6>
+                        <div id="reportPreviewSections"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Template Compare -->
+            <div class="card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                    <div>
+                        <div class="eyebrow-label">Template Compare</div>
+                        <h6 class="mb-1 text-bright">Style defaults at a glance</h6>
+                        <div class="compare-caption">선택한 data type이 왜 그 흐름을 쓰는지 다른 유형과 비교해서 보여줍니다.</div>
+                    </div>
+                    <small class="text-dim">선택된 유형은 강조 표시됩니다.</small>
+                </div>
+                <div class="row g-3" id="templateCompareGrid"></div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-lg-4">
+                    <div class="card p-4">
+                        <div class="eyebrow-label">Revision Workspace</div>
+                        <h6 class="mb-2 text-bright">Save checkpoints and compare before export</h6>
+                        <div class="revision-panel">
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <label class="form-label">Author</label>
+                                    <input type="text" class="form-control" id="revisionAuthor" placeholder="Reviewer or processor">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Change Note</label>
+                                    <textarea class="form-control" id="revisionChanges" rows="3" placeholder="What changed in this checkpoint?"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Saved Revisions</label>
+                                    <select class="form-select" id="revisionSelect" disabled>
+                                        <option value="">No revisions yet</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="revision-hint mt-3" id="revisionHistoryNote">
+                                Save a revision to compare the current draft against earlier checkpoints.
+                            </div>
+                            <div class="action-cluster mt-3">
+                                <button class="btn btn-primary btn-sm" type="button" onclick="saveRevision()">
+                                    <i class="bi bi-save me-1"></i> Save Revision
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm" type="button" onclick="compareWithSelectedRevision()">
+                                    <i class="bi bi-arrow-left-right me-1"></i> Compare
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="restoreSelectedRevision()">
+                                    <i class="bi bi-clock-history me-1"></i> Restore
+                                </button>
+                            </div>
+                            <div class="revision-diff mt-3" id="revisionDiffOutput">
+                                <div class="inline-status">Revision differences will be summarized here.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card p-4">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                            <div>
+                                <div class="eyebrow-label">Live Report Preview</div>
+                                <h6 class="mb-2 text-bright">See the final draft layout while editing</h6>
+                                <div class="inline-status" id="htmlPreviewStatus">
+                                    Generate or restore a draft to preview the final report layout.
+                                </div>
+                            </div>
+                            <div class="action-cluster">
+                                <button class="btn btn-outline-primary btn-sm" type="button" onclick="refreshHTMLPreview(true)">
+                                    <i class="bi bi-arrow-repeat me-1"></i> Refresh
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="exportHTML()">
+                                    <i class="bi bi-box-arrow-up-right me-1"></i> Open Window
+                                </button>
+                            </div>
+                        </div>
+                        <div class="preview-frame-wrap mt-3">
+                            <iframe id="htmlPreviewFrame" class="preview-frame" title="Live report preview"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Metadata Summary Card -->
             <div class="card meta-card p-4 mb-4">
@@ -452,6 +819,22 @@ Software: RadExPro 2024.4
                         <input type="text" class="form-control" id="editStepDesc" placeholder="예: Frequency filtering to remove noise">
                     </div>
                     <div class="mb-3">
+                        <label class="form-label">Stage</label>
+                        <input type="text" class="form-control" id="editStepStage" placeholder="Input &amp; Geometry">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Why This Step</label>
+                        <textarea class="form-control" id="editStepRationale" rows="2" placeholder="Explain why this step is part of the workflow."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">QC Focus</label>
+                        <textarea class="form-control" id="editStepQcFocus" rows="2" placeholder="Describe what the reviewer should check here."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Expected Output</label>
+                        <textarea class="form-control" id="editStepExpectedOutput" rows="2" placeholder="Describe the expected output or handoff from this step."></textarea>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label d-flex justify-content-between align-items-center">
                             <span>파라미터</span>
                             <button class="btn btn-outline-primary btn-sm" type="button" onclick="addParamRow()">
@@ -491,6 +874,22 @@ Software: RadExPro 2024.4
                         <input type="text" class="form-control" id="addStepDesc" placeholder="예: Predictive deconvolution to improve resolution">
                     </div>
                     <div class="mb-3">
+                        <label class="form-label">Stage</label>
+                        <input type="text" class="form-control" id="addStepStage" placeholder="Signal Conditioning">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Why This Step</label>
+                        <textarea class="form-control" id="addStepRationale" rows="2" placeholder="Explain why this custom step is needed."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">QC Focus</label>
+                        <textarea class="form-control" id="addStepQcFocus" rows="2" placeholder="Describe what should be checked after this step."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Expected Output</label>
+                        <textarea class="form-control" id="addStepExpectedOutput" rows="2" placeholder="Describe the expected output or handoff from this step."></textarea>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">삽입 위치</label>
                         <select class="form-select" id="addStepPosition">
                             <option value="">맨 끝에 추가</option>
@@ -522,6 +921,7 @@ Software: RadExPro 2024.4
         // ─── State ───
         let currentFlow = null;
         let selectedDataType = 'SBP';
+        let templateCatalog = {};
 
         // ─── Helpers ───
         function escapeHtml(str) {
@@ -549,6 +949,127 @@ Software: RadExPro 2024.4
             new bootstrap.Toast(document.getElementById('successToast'), { delay: 3000 }).show();
         }
 
+        function setListItems(elementId, items, emptyMessage) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            const values = Array.isArray(items) ? items.filter(Boolean) : [];
+            if (!values.length) {
+                el.innerHTML = `<li>${escapeHtml(emptyMessage)}</li>`;
+                return;
+            }
+            el.innerHTML = values.map(item => `<li>${escapeHtml(item)}</li>`).join('');
+        }
+
+        function truncateText(text, maxLen = 120) {
+            const value = (text || '').trim();
+            if (value.length <= maxLen) return value;
+            return value.slice(0, maxLen - 1).trimEnd() + '…';
+        }
+
+        async function loadDataTypeCatalog() {
+            try {
+                const resp = await fetch('/api/data_types');
+                if (!resp.ok) return;
+                const data = await resp.json();
+                templateCatalog = data.details || {};
+
+                document.querySelectorAll('.data-type-card').forEach(card => {
+                    const dtype = card.dataset.type;
+                    const info = templateCatalog[dtype];
+                    const badge = card.querySelector('.badge');
+                    if (info && badge) {
+                        badge.textContent = `${info.step_count} steps`;
+                    }
+                });
+
+                renderTemplateCompare(selectedDataType);
+            } catch (err) {
+                // Optional enhancement; fail silently.
+            }
+        }
+
+        function renderTemplateCompare(selectedType) {
+            const grid = document.getElementById('templateCompareGrid');
+            if (!grid) return;
+
+            const ordered = ['SBP', 'UHR', 'MBES', 'MAG', 'SSS'];
+            const cards = ordered
+                .map(dtype => {
+                    const info = templateCatalog[dtype];
+                    if (!info) return '';
+                    const selected = dtype === selectedType;
+                    return `
+                        <div class="col-md-6 col-xl-4">
+                            <div class="template-compare-card ${selected ? 'selected' : ''}">
+                                <div class="d-flex justify-content-between align-items-start gap-2">
+                                    <div>
+                                        <div class="compare-type">${escapeHtml(dtype)}</div>
+                                        <div class="compare-label">${escapeHtml(info.label || '')}</div>
+                                    </div>
+                                    <span class="badge bg-secondary">${info.step_count || 0} steps</span>
+                                </div>
+                                <div class="compare-focus">${escapeHtml(info.narrative_focus || info.story || '')}</div>
+                                <div class="compare-software">${escapeHtml(info.default_software || '')}</div>
+                                <div class="compare-why">${escapeHtml(info.why_template || '')}</div>
+                            </div>
+                        </div>
+                    `;
+                })
+                .filter(Boolean)
+                .join('');
+
+            grid.innerHTML = cards || '<div class="text-dim">템플릿 비교 정보를 불러오지 못했습니다.</div>';
+        }
+
+        function renderGuidedDraft(flow) {
+            const context = flow?.context || {};
+            const readiness = context.readiness || {};
+
+            document.getElementById('storyHeadline').textContent =
+                context.headline || `${flow?.data_type || selectedDataType} workflow story`;
+            document.getElementById('storySummary').textContent =
+                context.summary || '선택한 데이터 유형에 맞는 처리 서사를 준비 중입니다.';
+            document.getElementById('storyWhyTemplate').textContent =
+                context.why_template || '이 템플릿이 왜 이렇게 구성되는지에 대한 설명이 여기에 표시됩니다.';
+
+            const pill = document.getElementById('readinessPill');
+            pill.textContent = readiness.label || '초안 준비 중';
+            pill.className = `readiness-pill tone-${readiness.tone || 'info'}`;
+
+            setListItems(
+                'deliverablesList',
+                context.deliverables,
+                '기본 산출물 가이드가 아직 준비되지 않았습니다.'
+            );
+            setListItems(
+                'openItemsList',
+                context.open_items,
+                '현재 기준에서는 큰 공란 없이 draft story가 구성되어 있습니다.'
+            );
+
+            const stageRow = document.getElementById('stageSummaryRow');
+            const groups = Array.isArray(context.stage_groups) ? context.stage_groups : [];
+            stageRow.innerHTML = groups.length
+                ? groups.map(group => `
+                    <div class="stage-chip">
+                        <span class="chip-title">${escapeHtml(group.stage || 'Workflow')}</span>
+                        <span class="chip-meta">${group.step_count || 0} steps · ${escapeHtml(truncateText(group.summary || '', 90))}</span>
+                    </div>
+                  `).join('')
+                : '<div class="text-dim">단계별 요약이 아직 없습니다.</div>';
+
+            const preview = document.getElementById('reportPreviewSections');
+            const sections = Array.isArray(context.report_sections) ? context.report_sections : [];
+            preview.innerHTML = sections.length
+                ? sections.map(section => `
+                    <div class="preview-section">
+                        <div class="preview-section-title">${escapeHtml(section.title || '')}</div>
+                        <div class="preview-section-body">${escapeHtml(section.body || '')}</div>
+                    </div>
+                  `).join('')
+                : '<div class="preview-section"><div class="preview-section-body">출력 스토리 미리보기를 준비 중입니다.</div></div>';
+        }
+
         // ─── Data Type Selection ───
         function selectDataType(el, dtype) {
             document.querySelectorAll('.data-type-card').forEach(c => c.classList.remove('selected'));
@@ -561,11 +1082,16 @@ Software: RadExPro 2024.4
                 'SSS': 'SonarWiz / CARIS'
             };
             document.getElementById('tplSoftware').value = softwareMap[dtype] || 'RadExPro';
+            renderTemplateCompare(dtype);
         }
 
         // ─── Render Preview ───
         function renderPreview(flow) {
             currentFlow = flow;
+            selectedDataType = flow.data_type || selectedDataType;
+            document.querySelectorAll('.data-type-card').forEach(card => {
+                card.classList.toggle('selected', card.dataset.type === selectedDataType);
+            });
 
             // Metadata
             document.getElementById('pvProjectName').textContent = flow.project_name || '-';
@@ -579,6 +1105,8 @@ Software: RadExPro 2024.4
 
             // Steps
             renderSteps(flow.steps);
+            renderGuidedDraft(flow);
+            renderTemplateCompare(selectedDataType);
 
             document.getElementById('previewSection').style.display = 'block';
             document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -605,6 +1133,26 @@ Software: RadExPro 2024.4
                     const icon = isTBD ? '<i class="bi bi-exclamation-triangle-fill me-1"></i>' : '';
                     return `<span class="${cls}">${icon}<strong>${escapeHtml(k)}:</strong> ${escapeHtml(v)}</span>`;
                 }).join('');
+                const stageBadge = step.stage
+                    ? `<div class="step-stage-badge">${escapeHtml(step.stage)}</div>`
+                    : '';
+                const metaCards = [
+                    step.rationale ? `
+                        <div class="step-meta-card">
+                            <div class="meta-kicker">Why This Step</div>
+                            <div class="meta-copy">${escapeHtml(step.rationale)}</div>
+                        </div>` : '',
+                    step.qc_focus ? `
+                        <div class="step-meta-card">
+                            <div class="meta-kicker">QC Focus</div>
+                            <div class="meta-copy">${escapeHtml(step.qc_focus)}</div>
+                        </div>` : '',
+                    step.expected_output ? `
+                        <div class="step-meta-card">
+                            <div class="meta-kicker">Expected Output</div>
+                            <div class="meta-copy">${escapeHtml(step.expected_output)}</div>
+                        </div>` : '',
+                ].filter(Boolean).join('');
 
                 const isFirst = idx === 0;
                 const isLast = idx === steps.length - 1;
@@ -614,8 +1162,10 @@ Software: RadExPro 2024.4
                         <div class="d-flex align-items-start">
                             <span class="step-order">${step.order}</span>
                             <div class="flex-grow-1">
+                                ${stageBadge}
                                 <span class="step-name">${escapeHtml(step.name)}</span>
                                 ${step.description ? `<div class="step-desc">${escapeHtml(step.description)}</div>` : ''}
+                                ${metaCards ? `<div class="step-meta-grid">${metaCards}</div>` : ''}
                                 ${paramBadges ? `<div class="d-flex flex-wrap">${paramBadges}</div>` : ''}
                             </div>
                             <div class="step-actions">
@@ -641,23 +1191,21 @@ Software: RadExPro 2024.4
         // ─── Statistics ───
         async function loadStatistics(flow) {
             try {
-                const resp = await fetch('/api/statistics', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(flow),
-                });
-                if (!resp.ok) return;
-                const stats = await resp.json();
+                const stats = flow?.statistics
+                    ? flow.statistics
+                    : await fetch('/api/statistics', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(flow),
+                    }).then(resp => resp.ok ? resp.json() : null);
+
+                if (!stats) return;
 
                 document.getElementById('statSteps').textContent = stats.step_count || 0;
                 document.getElementById('statParams').textContent = stats.total_parameters || 0;
-
-                // Completeness: count non-TBD vs total params
-                const tbdCount = stats.tbd_parameters || 0;
-                const totalP = stats.total_parameters || 0;
-                const pct = totalP > 0 ? Math.round(((totalP - tbdCount) / totalP) * 100) : 100;
-                document.getElementById('statComplete').textContent = pct + '%';
-                document.getElementById('statTBD').textContent = tbdCount;
+                document.getElementById('statComplete').textContent =
+                    `${Math.round(stats.draft_readiness ?? stats.completeness_score ?? 0)}%`;
+                document.getElementById('statTBD').textContent = stats.tbd_parameters || 0;
 
                 document.getElementById('statsRow').style.display = '';
             } catch (e) {
@@ -668,13 +1216,15 @@ Software: RadExPro 2024.4
         // ─── Validation ───
         async function loadValidation(flow) {
             try {
-                const resp = await fetch('/api/validate_params', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(flow),
-                });
-                if (!resp.ok) return;
-                const result = await resp.json();
+                const result = flow?.validation
+                    ? flow.validation
+                    : await fetch('/api/validate_params', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(flow),
+                    }).then(resp => resp.ok ? resp.json() : null);
+
+                if (!result) return;
 
                 const banner = document.getElementById('validationBanner');
                 const warnings = result.warnings || [];
@@ -682,10 +1232,15 @@ Software: RadExPro 2024.4
 
                 if (errors.length === 0 && warnings.length === 0) {
                     banner.className = 'validation-banner ok';
-                    banner.innerHTML = '<i class="bi bi-check-circle-fill"></i> 모든 파라미터가 유효합니다.';
+                    banner.innerHTML = '<i class="bi bi-check-circle-fill"></i> 구조상 큰 경고 없이 draft story가 정리되었습니다.';
                 } else {
-                    const msgs = [...errors.map(e => `<span class="text-danger"><i class="bi bi-x-circle me-1"></i>${escapeHtml(e)}</span>`),
-                                  ...warnings.map(w => `<span><i class="bi bi-exclamation-triangle me-1"></i>${escapeHtml(w)}</span>`)];
+                    const msgs = [
+                        ...errors.slice(0, 3).map(e => `<span class="text-danger"><i class="bi bi-x-circle me-1"></i>${escapeHtml(e)}</span>`),
+                        ...warnings.slice(0, 4).map(w => `<span><i class="bi bi-exclamation-triangle me-1"></i>${escapeHtml(w)}</span>`),
+                    ];
+                    if ((result.unknown || 0) > 0) {
+                        msgs.push(`<span class="text-dim"><i class="bi bi-info-circle me-1"></i>${result.unknown} parameters are outside the current rule set.</span>`);
+                    }
                     banner.className = 'validation-banner warn';
                     banner.innerHTML = msgs.join('<br>');
                 }
@@ -1082,6 +1637,10 @@ Software: RadExPro 2024.4
                 currentFlow = null;
             });
         });
+
+        loadDataTypeCatalog();
+        renderTemplateCompare(selectedDataType);
     </script>
+    <script src="/static/js/processing-report-ux.js"></script>
 </body>
 </html>

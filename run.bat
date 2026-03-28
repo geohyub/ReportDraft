@@ -3,7 +3,7 @@ chcp 65001 >nul
 title ProcessingReportDraft - 처리보고서 초안 생성기
 echo ============================================
 echo   ProcessingReportDraft - 처리보고서 초안 생성기
-echo   Port: 5007
+echo   Port: 5404
 echo ============================================
 echo.
 cd /d "%~dp0"
@@ -13,9 +13,9 @@ if errorlevel 1 (
     pip install -r requirements.txt
     echo.
 )
-echo [INFO] http://127.0.0.1:5007 에서 실행됩니다.
+echo [INFO] http://127.0.0.1:5404 에서 실행됩니다.
 echo [INFO] 종료하려면 Ctrl+C 를 누르세요.
 echo.
-start http://127.0.0.1:5007
-python main.py --port 5007
+start http://127.0.0.1:5404
+python main.py --port 5404
 pause

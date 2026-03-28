@@ -1,9 +1,9 @@
 """ProcessingReportDraft - Processing Log to Report Draft Generator.
 
 Usage:
-    python main.py                              -- Start web GUI (default, port 5007)
-    python main.py --port 5008                  -- Start web GUI on custom port
-    python main.py web --port 5007              -- Start web GUI explicitly
+    python main.py                              -- Start web GUI (default, port 5404)
+    python main.py --port 5408                  -- Start web GUI on custom port
+    python main.py web --port 5404              -- Start web GUI explicitly
     python main.py cli template --type SBP      -- CLI: generate from template
     python main.py cli parse processing.log     -- CLI: parse log file
 """
@@ -20,7 +20,7 @@ from core import (
 
 
 @click.group(invoke_without_command=True)
-@click.option("--port", default=5007, type=int, help="Web server port (default: 5007)")
+@click.option("--port", default=5404, type=int, help="Web server port (default: 5404)")
 @click.pass_context
 def main(ctx, port):
     """ProcessingReportDraft - Generate processing report drafts.
@@ -36,7 +36,7 @@ def main(ctx, port):
 
 
 @main.command("web")
-@click.option("--port", default=5007, type=int, help="Web server port (default: 5007)")
+@click.option("--port", default=5404, type=int, help="Web server port (default: 5404)")
 def web_cmd(port):
     """Start the web GUI server."""
     _start_web(port)

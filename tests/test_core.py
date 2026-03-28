@@ -73,6 +73,9 @@ def test_template_sbp():
     assert flow.data_type == "SBP"
     assert flow.software == "RadExPro"
     assert len(flow.steps) == len(DEFAULT_SBP_STEPS)
+    assert flow.steps[0].stage == "Input & Geometry"
+    assert flow.steps[0].rationale
+    assert flow.steps[0].qc_focus
 
 
 def test_template_uhr():
@@ -283,6 +286,8 @@ def test_supported_types_preview():
     info = get_supported_types()
     assert "steps_preview" in info["MBES"]
     assert len(info["MBES"]["steps_preview"]) <= 5
+    assert info["MBES"]["why_template"]
+    assert info["MBES"]["label"] == "Multibeam Echo Sounder"
 
 
 # ── DOCX Generation Tests ──
@@ -611,6 +616,8 @@ def test_flow_statistics_sbp():
     assert stats["step_count"] >= 8
     assert stats["total_parameters"] > 0
     assert stats["data_type"] == "SBP"
+    assert stats["tbd_parameters"] > 0
+    assert stats["stage_count"] > 0
 
 
 def test_flow_statistics_empty():
@@ -682,6 +689,8 @@ def test_generate_json_export():
     data = json.loads(json_str)
     assert data["data_type"] == "SBP"
     assert len(data["steps"]) >= 8
+    assert "context" in data
+    assert data["steps"][0]["stage"] == "Input & Geometry"
 
 
 def test_generate_json_export_roundtrip():
