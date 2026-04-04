@@ -1,0 +1,2 @@
+"""Desktop panels for ProcessingReportDraft."""
+
