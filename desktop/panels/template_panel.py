@@ -13,11 +13,11 @@ from PySide6.QtWidgets import (
     QSpinBox,
     QComboBox,
     QPushButton,
-    QTableWidget,
-    QTableWidgetItem,
     QTextBrowser,
     QSizePolicy,
 )
+
+from geoview_pyside6.widgets import GVTableView
 
 
 class TemplatePanel(QWidget):
@@ -72,11 +72,7 @@ class TemplatePanel(QWidget):
 
         catalog_box = QGroupBox("Template catalog")
         catalog_layout = QVBoxLayout(catalog_box)
-        self.catalog = QTableWidget(0, 4)
-        self.catalog.setHorizontalHeaderLabels(["Type", "Label", "Software", "Steps"])
-        self.catalog.horizontalHeader().setStretchLastSection(True)
-        self.catalog.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
-        self.catalog.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
+        self.catalog = GVTableView()
         self.catalog.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         catalog_layout.addWidget(self.catalog)
         self.template_story = QTextBrowser()
@@ -87,7 +83,6 @@ class TemplatePanel(QWidget):
         root.addLayout(top_row)
 
         self.apply_btn.clicked.connect(self._load_template)
-        self.catalog.itemSelectionChanged.connect(self._sync_catalog_selection)
         self._populate_catalog()
         self._load_current_flow()
         self.controller.flow_changed.connect(self._load_current_flow)
@@ -107,22 +102,34 @@ class TemplatePanel(QWidget):
 
     def _populate_catalog(self):
         info = self.controller.data.supported_types()
-        rows = list(info.items())
-        self.catalog.setRowCount(len(rows))
-        for row_idx, (key, item) in enumerate(rows):
-            self.catalog.setItem(row_idx, 0, QTableWidgetItem(key))
-            self.catalog.setItem(row_idx, 1, QTableWidgetItem(item.get("label", key)))
-            self.catalog.setItem(row_idx, 2, QTableWidgetItem(item.get("default_software", "")))
-            self.catalog.setItem(row_idx, 3, QTableWidgetItem(str(item.get("step_count", ""))))
-        if rows:
+        self._catalog_keys: list[str] = []
+        table_data = []
+        for key, item in info.items():
+            self._catalog_keys.append(key)
+            table_data.append([
+                key,
+                item.get("label", key),
+                item.get("default_software", ""),
+                str(item.get("step_count", "")),
+            ])
+        self.catalog.set_data(["Type", "Label", "Software", "Steps"], table_data)
+        # Connect selection after data is set
+        sel_model = self.catalog.selectionModel()
+        if sel_model:
+            sel_model.currentRowChanged.connect(self._sync_catalog_selection)
+        if table_data:
             self.catalog.selectRow(0)
 
-    def _sync_catalog_selection(self):
-        rows = self.catalog.selectionModel().selectedRows()
-        if not rows:
+    def _sync_catalog_selection(self, *args):
+        idx = self.catalog.currentIndex()
+        if not idx.isValid():
             return
-        row = rows[0].row()
-        key = self.catalog.item(row, 0).text()
+        proxy = self.catalog._proxy
+        source_idx = proxy.mapToSource(idx) if proxy else idx
+        row = source_idx.row()
+        if row < 0 or row >= len(self._catalog_keys):
+            return
+        key = self._catalog_keys[row]
         self.data_type.setCurrentText(key)
         info = self.controller.data.supported_types().get(key, {})
         summary = [

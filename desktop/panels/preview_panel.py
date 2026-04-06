@@ -9,12 +9,11 @@ from PySide6.QtWidgets import (
     QTabWidget,
     QTextBrowser,
     QPlainTextEdit,
-    QTableWidget,
-    QTableWidgetItem,
     QPushButton,
 )
 
-from desktop.widgets.metric_card import MetricCard
+from geoview_pyside6.constants import Dark
+from geoview_pyside6.widgets import KPICard, GVTableView
 
 
 class PreviewPanel(QWidget):
@@ -30,10 +29,10 @@ class PreviewPanel(QWidget):
 
         top = QHBoxLayout()
         self.cards = [
-            MetricCard("Readiness"),
-            MetricCard("Steps"),
-            MetricCard("Validation"),
-            MetricCard("Placeholders"),
+            KPICard("shield-check", "--", "Readiness", accent=Dark.GREEN),
+            KPICard("list-ordered", "--", "Steps", accent=Dark.BLUE),
+            KPICard("check-circle", "--", "Validation", accent=Dark.CYAN),
+            KPICard("alert-circle", "--", "Placeholders", accent=Dark.ORANGE),
         ]
         for card in self.cards:
             top.addWidget(card)
@@ -50,12 +49,18 @@ class PreviewPanel(QWidget):
         self.text_view.setReadOnly(True)
         self.json_view = QPlainTextEdit()
         self.json_view.setReadOnly(True)
-        self.validation_table = QTableWidget(0, 5)
-        self.validation_table.setHorizontalHeaderLabels(["Step", "Parameter", "Value", "Expected", "Severity"])
-        self.validation_table.horizontalHeader().setStretchLastSection(True)
-        self.stats_table = QTableWidget(0, 2)
-        self.stats_table.setHorizontalHeaderLabels(["Key", "Value"])
-        self.stats_table.horizontalHeader().setStretchLastSection(True)
+        self.validation_table = GVTableView()
+        self.validation_table.show_empty_state(
+            "No validation issues",
+            icon_name="check-circle",
+            subtitle="Run preview to see validation results",
+        )
+        self.stats_table = GVTableView()
+        self.stats_table.show_empty_state(
+            "No statistics available",
+            icon_name="bar-chart-2",
+            subtitle="Load a template to see statistics",
+        )
 
         self.tabs.addTab(self.overview, "Overview")
         self.tabs.addTab(self.html_view, "HTML")
@@ -78,13 +83,13 @@ class PreviewPanel(QWidget):
         stats = bundle["statistics"]
 
         self.cards[0].set_value(context["readiness"]["label"])
-        self.cards[0].set_detail(context["readiness"]["detail"])
+        self.cards[0].set_label(context["readiness"]["detail"])
         self.cards[1].set_value(str(stats["step_count"]))
-        self.cards[1].set_detail(f"{stats['stage_count']} stage(s)")
+        self.cards[1].set_label(f"{stats['stage_count']} stage(s)")
         self.cards[2].set_value(f"{validation['score']}%")
-        self.cards[2].set_detail(f"{validation['valid']} valid · {validation['invalid']} invalid")
+        self.cards[2].set_label(f"{validation['valid']} valid / {validation['invalid']} invalid")
         self.cards[3].set_value(str(stats["tbd_parameters"]))
-        self.cards[3].set_detail("Fill these before issue")
+        self.cards[3].set_label("Open placeholders")
 
         overview_html = [
             f"<h2>{context['headline']}</h2>",
@@ -110,10 +115,19 @@ class PreviewPanel(QWidget):
         self.json_view.setPlainText(bundle["json"])
 
         issues = validation.get("issues", [])
-        self.validation_table.setRowCount(len(issues))
-        for row, issue in enumerate(issues):
-            for col, key in enumerate(["step", "parameter", "value", "expected", "severity"]):
-                self.validation_table.setItem(row, col, QTableWidgetItem(str(issue.get(key, ""))))
+        if issues:
+            self.validation_table.hide_empty_state()
+            val_data = [
+                [str(issue.get(k, "")) for k in ("step", "parameter", "value", "expected", "severity")]
+                for issue in issues
+            ]
+            self.validation_table.set_data(
+                ["Step", "Parameter", "Value", "Expected", "Severity"], val_data,
+            )
+        else:
+            self.validation_table.show_empty_state(
+                "No validation issues", icon_name="check-circle",
+            )
 
         stats_items = [
             ("step_count", stats["step_count"]),
@@ -124,7 +138,8 @@ class PreviewPanel(QWidget):
             ("draft_readiness", stats["draft_readiness"]),
             ("has_metadata", stats["has_metadata"]),
         ]
-        self.stats_table.setRowCount(len(stats_items))
-        for row, (key, value) in enumerate(stats_items):
-            self.stats_table.setItem(row, 0, QTableWidgetItem(str(key)))
-            self.stats_table.setItem(row, 1, QTableWidgetItem(str(value)))
+        self.stats_table.hide_empty_state()
+        self.stats_table.set_data(
+            ["Key", "Value"],
+            [[str(k), str(v)] for k, v in stats_items],
+        )

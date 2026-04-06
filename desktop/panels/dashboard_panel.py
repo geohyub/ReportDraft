@@ -9,8 +9,6 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QPushButton,
     QTextBrowser,
-    QTableWidget,
-    QTableWidgetItem,
     QListWidget,
     QListWidgetItem,
     QFrame,
@@ -19,7 +17,8 @@ from PySide6.QtWidgets import (
     QSizePolicy,
 )
 
-from desktop.widgets.metric_card import MetricCard
+from geoview_pyside6.constants import Dark
+from geoview_pyside6.widgets import KPICard, GVTableView
 
 
 class DashboardPanel(QWidget):
@@ -52,10 +51,10 @@ class DashboardPanel(QWidget):
         cards = QHBoxLayout()
         cards.setSpacing(10)
         self.cards = [
-            MetricCard("Data type"),
-            MetricCard("Workflow steps"),
-            MetricCard("Validation"),
-            MetricCard("Placeholders"),
+            KPICard("database", "--", "Data type", accent=Dark.BLUE),
+            KPICard("list-ordered", "--", "Workflow steps", accent=Dark.GREEN),
+            KPICard("shield-check", "--", "Validation", accent=Dark.CYAN),
+            KPICard("alert-circle", "--", "Placeholders", accent=Dark.ORANGE),
         ]
         for card in self.cards:
             card.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
@@ -84,9 +83,12 @@ class DashboardPanel(QWidget):
 
         right_box = QGroupBox("Stage Overview")
         right_layout = QVBoxLayout(right_box)
-        self.stage_table = QTableWidget(0, 3)
-        self.stage_table.setHorizontalHeaderLabels(["Stage", "Steps", "Summary"])
-        self.stage_table.horizontalHeader().setStretchLastSection(True)
+        self.stage_table = GVTableView()
+        self.stage_table.show_empty_state(
+            "No stages loaded",
+            icon_name="layers",
+            subtitle="Load a template to see workflow stages",
+        )
         right_layout.addWidget(self.stage_table)
 
         self.activity_list = QListWidget()
@@ -130,13 +132,13 @@ class DashboardPanel(QWidget):
         validation = context["validation"]
 
         self.cards[0].set_value(context["label"])
-        self.cards[0].set_detail(context["processing_strategy"])
+        self.cards[0].set_label(context["processing_strategy"])
         self.cards[1].set_value(str(stats["step_count"]))
-        self.cards[1].set_detail(f"{stats['stage_count']} stage(s) · {stats['total_parameters']} parameter(s)")
+        self.cards[1].set_label(f"{stats['stage_count']} stage(s)")
         self.cards[2].set_value(f"{validation['score']}%")
-        self.cards[2].set_detail(f"{validation['valid']} valid · {validation['invalid']} invalid · {validation['unknown']} unknown")
+        self.cards[2].set_label(f"{validation['valid']} valid / {validation['invalid']} invalid")
         self.cards[3].set_value(str(stats["tbd_parameters"]))
-        self.cards[3].set_detail("Fill placeholders before issuing the draft.")
+        self.cards[3].set_label("Open placeholders")
 
         self.summary_label.setText(context["executive_summary"])
         self.story.setHtml(
@@ -149,9 +151,13 @@ class DashboardPanel(QWidget):
         )
 
         rows = context["stage_groups"]
-        self.stage_table.setRowCount(len(rows))
-        for row_idx, row in enumerate(rows):
-            self.stage_table.setItem(row_idx, 0, QTableWidgetItem(row["stage"]))
-            self.stage_table.setItem(row_idx, 1, QTableWidgetItem(str(row["step_count"])))
-            self.stage_table.setItem(row_idx, 2, QTableWidgetItem(row["summary"]))
+        if rows:
+            self.stage_table.hide_empty_state()
+            table_data = [
+                [row["stage"], str(row["step_count"]), row["summary"]]
+                for row in rows
+            ]
+            self.stage_table.set_data(["Stage", "Steps", "Summary"], table_data)
+        else:
+            self.stage_table.show_empty_state("No stages loaded", icon_name="layers")
 

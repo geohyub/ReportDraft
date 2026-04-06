@@ -13,14 +13,13 @@ from PySide6.QtWidgets import (
     QGroupBox,
     QPlainTextEdit,
     QPushButton,
-    QTableWidget,
-    QTableWidgetItem,
     QLineEdit,
     QTextEdit,
     QFormLayout,
     QLabel,
-    QMessageBox,
 )
+
+from geoview_pyside6.widgets import GVTableView
 
 
 class EditorPanel(QWidget):
@@ -29,6 +28,7 @@ class EditorPanel(QWidget):
     def __init__(self, controller, parent=None):
         super().__init__(parent)
         self.controller = controller
+        self._step_data: list[list[str]] = []
 
         root = QVBoxLayout(self)
         root.setContentsMargins(16, 16, 16, 16)
@@ -59,11 +59,12 @@ class EditorPanel(QWidget):
 
         right_box = QGroupBox("Workflow Steps")
         right_layout = QVBoxLayout(right_box)
-        self.step_table = QTableWidget(0, 6)
-        self.step_table.setHorizontalHeaderLabels(["Order", "Stage", "Name", "Description", "QC Focus", "Expected Output"])
-        self.step_table.horizontalHeader().setStretchLastSection(True)
-        self.step_table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
-        self.step_table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
+        self.step_table = GVTableView()
+        self.step_table.show_empty_state(
+            "No workflow steps",
+            icon_name="list-ordered",
+            subtitle="Parse a log or add steps manually",
+        )
         right_layout.addWidget(self.step_table)
 
         edit_box = QGroupBox("Step editor")
@@ -110,28 +111,36 @@ class EditorPanel(QWidget):
         self.remove_btn.clicked.connect(self._remove_step)
         self.up_btn.clicked.connect(lambda: self._move_step(-1))
         self.down_btn.clicked.connect(lambda: self._move_step(+1))
-        self.step_table.itemSelectionChanged.connect(self._sync_editor_from_selection)
         self.controller.flow_changed.connect(self.refresh_flow)
         self.refresh_flow(self.controller.current_flow)
 
     def _selected_order(self) -> int | None:
-        rows = self.step_table.selectionModel().selectedRows()
-        if not rows:
+        idx = self.step_table.currentIndex()
+        if not idx.isValid():
             return None
-        item = self.step_table.item(rows[0].row(), 0)
-        return int(item.text()) if item else None
+        proxy = self.step_table._proxy
+        source_idx = proxy.mapToSource(idx) if proxy else idx
+        row = source_idx.row()
+        if row < 0 or row >= len(self._step_data):
+            return None
+        return int(self._step_data[row][0])
 
-    def _sync_editor_from_selection(self):
-        rows = self.step_table.selectionModel().selectedRows()
-        if not rows:
+    def _sync_editor_from_selection(self, *args):
+        idx = self.step_table.currentIndex()
+        if not idx.isValid():
             return
-        row = rows[0].row()
-        self.name.setText(self.step_table.item(row, 2).text())
-        self.stage.setText(self.step_table.item(row, 1).text())
-        self.description.setText(self.step_table.item(row, 3).text())
-        self.qc_focus.setText(self.step_table.item(row, 4).text())
-        self.expected_output.setText(self.step_table.item(row, 5).text())
-        order = int(self.step_table.item(row, 0).text())
+        proxy = self.step_table._proxy
+        source_idx = proxy.mapToSource(idx) if proxy else idx
+        row = source_idx.row()
+        if row < 0 or row >= len(self._step_data):
+            return
+        data = self._step_data[row]
+        self.name.setText(data[2])       # Name
+        self.stage.setText(data[1])      # Stage
+        self.description.setText(data[3]) # Description
+        self.qc_focus.setText(data[4])   # QC Focus
+        self.expected_output.setText(data[5])  # Expected Output
+        order = int(data[0])
         step = next((s for s in self.controller.current_flow.steps if s.order == order), None)
         self.rationale.setText(getattr(step, "rationale", ""))
         try:
@@ -155,7 +164,9 @@ class EditorPanel(QWidget):
                 if not isinstance(params, dict):
                     raise ValueError("Parameters must be a JSON object")
             except Exception as exc:
-                QMessageBox.warning(self, "Parameters", f"Invalid JSON: {exc}")
+                from geoview_pyside6.widgets.confirm_dialog import ConfirmDialog
+                ConfirmDialog("Parameters", f"Invalid JSON: {exc}",
+                              confirm_text="OK", cancel_text="", dialog_type="error", parent=self).exec()
                 return {}
         return {
             "name": self.name.text().strip(),
@@ -212,16 +223,30 @@ class EditorPanel(QWidget):
             f"Validation score: {validation['score']}% | "
             f"Open items: {len(context['open_items'])}"
         )
-        self.step_table.setRowCount(len(flow.steps))
-        for row_idx, step in enumerate(flow.steps):
-            values = [
+        self._step_data = []
+        for step in flow.steps:
+            self._step_data.append([
                 str(step.order),
                 step.stage,
                 step.name,
                 step.description,
                 step.qc_focus,
                 step.expected_output,
-            ]
-            for col, value in enumerate(values):
-                self.step_table.setItem(row_idx, col, QTableWidgetItem(value))
+            ])
+        if self._step_data:
+            self.step_table.hide_empty_state()
+            self.step_table.set_data(
+                ["Order", "Stage", "Name", "Description", "QC Focus", "Expected Output"],
+                self._step_data,
+            )
+            # Reconnect selection signal after set_data creates new model
+            sel_model = self.step_table.selectionModel()
+            if sel_model:
+                sel_model.currentRowChanged.connect(self._sync_editor_from_selection)
+        else:
+            self.step_table.show_empty_state(
+                "No workflow steps",
+                icon_name="list-ordered",
+                subtitle="Parse a log or add steps manually",
+            )
 
