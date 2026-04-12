@@ -111,7 +111,7 @@ class DraftExportService:
             f"- Can sign off: {'Yes' if signoff['can_sign_off'] else 'No'}",
             f"- Needs review: {'Yes' if signoff['needs_review'] else 'No'}",
             "- Checklist:",
-        ]
+        ])
         lines.extend(f"  - {item}" for item in signoff["checklist"])
         lines.extend([
             "",
@@ -163,7 +163,7 @@ class DraftExportService:
             "  -------------------------",
             f"  Story:         {packet['handoff_summary']['story']}",
             f"  Strategy:      {packet['handoff_summary']['strategy']}",
-            f"  Change summary:{packet['handoff_summary']['change_summary']}",
+            f"  Change summary: {packet['handoff_summary']['change_summary']}",
             f"  Attention:     {packet['handoff_summary']['attention_summary']}",
             f"  Status:        {packet['handoff_summary']['status']}",
             f"  Next step:     {packet['handoff_summary']['next_step']}",
@@ -192,7 +192,7 @@ class DraftExportService:
             "  ------------------",
             f"  Can sign off: {'Yes' if signoff['can_sign_off'] else 'No'}",
             f"  Needs review: {'Yes' if signoff['needs_review'] else 'No'}",
-        ]
+        ])
         lines.extend(f"  - {item}" for item in signoff["checklist"])
         lines.extend([
             "",

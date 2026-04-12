@@ -163,7 +163,7 @@ class ExportPanel(QWidget):
             "<ul>",
             f"<li><strong>Can sign off:</strong> {'Yes' if signoff['can_sign_off'] else 'No'}</li>",
             f"<li><strong>Needs review:</strong> {'Yes' if signoff['needs_review'] else 'No'}</li>",
-        ]
+        ])
         html_lines.extend(f"<li>{html.escape(item)}</li>" for item in signoff["checklist"])
         html_lines.extend([
             "</ul>",
