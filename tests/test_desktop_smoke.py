@@ -59,5 +59,25 @@ def test_dashboard_and_editor_refresh(app):
     assert window.controller.current_flow.step_count > 0
     window.sidebar.set_active_panel("dashboard")
     app.processEvents()
-    assert window.dashboard_panel.cards[1].value_label.text() == str(window.controller.current_flow.step_count)
+    assert window.dashboard_panel.cards[1]._value_label.text() == str(window.controller.current_flow.step_count)
 
+
+def test_export_panel_operator_packet_and_save(tmp_path, app):
+    window = ProcessingReportDraftApp()
+    window.sidebar.set_active_panel("export")
+    app.processEvents()
+
+    packet_html = window.export_panel.packet.toHtml().lower()
+    assert "operator packet" in packet_html or "readiness" in packet_html
+    assert "author / reviewer handoff" in packet_html
+    assert "template comparison" in packet_html
+    assert "sign-off readiness" in packet_html
+
+    window.export_panel.output_dir.setText(str(tmp_path))
+    window.export_panel._refresh_packet()
+    window.export_panel._export_packet("json")
+    app.processEvents()
+
+    saved = list(tmp_path.glob("*_OperatorPacket.json"))
+    assert saved
+    assert saved[0].stat().st_size > 100
