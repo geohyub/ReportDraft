@@ -70,6 +70,7 @@ def test_export_panel_operator_packet_and_save(tmp_path, app):
     packet_html = window.export_panel.packet.toHtml().lower()
     assert "operator packet" in packet_html or "readiness" in packet_html
     assert "author / reviewer handoff" in packet_html
+    assert "reviewer routing" in packet_html
     assert "template comparison" in packet_html
     assert "sign-off readiness" in packet_html
 

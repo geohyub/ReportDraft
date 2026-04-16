@@ -122,6 +122,7 @@ class ExportPanel(QWidget):
         current = packet["current_state"]
         comparison = packet["template_comparison"]
         handoff = packet["handoff_summary"]
+        routing = packet["reviewer_routing"]
         signoff = packet["sign_off"]
         last_export = packet["last_export"]
         html_lines = [
@@ -145,6 +146,26 @@ class ExportPanel(QWidget):
             html_lines.extend(f"<li>{html.escape(item)}</li>" for item in handoff["attention_items"])
             html_lines.append("</ul></li>")
         html_lines.extend([
+            "</ul>",
+            "<h4>Reviewer routing</h4>",
+            "<ul>",
+            f"<li><strong>Status:</strong> {html.escape(routing['status'])}</li>",
+            f"<li><strong>Next check:</strong> {html.escape(routing['next_check'])}</li>",
+            f"<li><strong>Material change summary:</strong> {html.escape(routing['material_change_summary'])}</li>",
+            f"<li><strong>Reviewer message:</strong> {html.escape(routing['reviewer_message'])}</li>",
+            "<li><strong>Material changes:</strong><ul>",
+        ])
+        html_lines.extend(f"<li>{html.escape(item)}</li>" for item in routing["material_changes"])
+        html_lines.extend([
+            "</ul></li>",
+            "<li><strong>Pass back to author:</strong><ul>",
+        ])
+        if routing["author_return_items"]:
+            html_lines.extend(f"<li>{html.escape(item)}</li>" for item in routing["author_return_items"])
+        else:
+            html_lines.append("<li>No return items; continue to sign-off.</li>")
+        html_lines.extend([
+            "</ul></li>",
             "</ul>",
             "<h4>Readiness</h4>",
             f"<h3>{html.escape(packet['readiness']['label'])}</h3>",

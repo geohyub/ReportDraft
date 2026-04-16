@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from typing import Any
 import json
@@ -18,9 +19,17 @@ from core import (
 class DraftExportService:
     """Write desktop-export artifacts without touching the Flask entry point."""
 
+    def _safe_stem(self, value: str | None, fallback: str) -> str:
+        text = (value or fallback).strip()
+        text = text.replace("\\", "_").replace("/", "_").replace(":", "_")
+        text = text.replace(".", "_")
+        text = re.sub(r"[^A-Za-z0-9_-]+", "_", text)
+        text = re.sub(r"_+", "_", text).strip("_")
+        return text or fallback
+
     def default_filename(self, flow, fmt: str) -> str:
-        project = (flow.project_name or "ProcessingReport").strip().replace(" ", "_")
-        data_type = (flow.data_type or "SBP").upper()
+        project = self._safe_stem(flow.project_name, "ProcessingReport")
+        data_type = self._safe_stem(flow.data_type, "SBP").upper()
         ext_map = {
             "docx": ".docx",
             "excel": ".xlsx",
@@ -31,8 +40,8 @@ class DraftExportService:
         return f"{project}_{data_type}_Draft{ext_map.get(fmt, '.docx')}"
 
     def default_packet_filename(self, flow, fmt: str) -> str:
-        project = (flow.project_name or "ProcessingReport").strip().replace(" ", "_")
-        data_type = (flow.data_type or "SBP").upper()
+        project = self._safe_stem(flow.project_name, "ProcessingReport")
+        data_type = self._safe_stem(flow.data_type, "SBP").upper()
         ext_map = {
             "json": ".json",
             "markdown": ".md",
@@ -68,6 +77,7 @@ class DraftExportService:
 
     def render_operator_packet_markdown(self, packet: dict[str, Any]) -> str:
         handoff = packet["handoff_summary"]
+        routing = packet["reviewer_routing"]
         readiness = packet["readiness"]
         current = packet["current_state"]
         comparison = packet["template_comparison"]
@@ -94,6 +104,23 @@ class DraftExportService:
         if handoff["attention_items"]:
             lines.append("- Attention items:")
             lines.extend(f"  - {item}" for item in handoff["attention_items"])
+        lines.extend([
+            "",
+            "## Reviewer routing",
+            f"- Status: {routing['status']}",
+            f"- Next check: {routing['next_check']}",
+            f"- Material change summary: {routing['material_change_summary']}",
+            f"- Reviewer message: {routing['reviewer_message']}",
+            "- Material changes:",
+        ])
+        lines.extend(f"  - {item}" for item in routing["material_changes"])
+        lines.extend([
+            "- Pass back to author:",
+        ])
+        if routing["author_return_items"]:
+            lines.extend(f"  - {item}" for item in routing["author_return_items"])
+        else:
+            lines.append("  - No return items; continue to sign-off.")
         lines.extend([
             "",
             "## Readiness",
@@ -150,6 +177,7 @@ class DraftExportService:
 
     def render_operator_packet_text(self, packet: dict[str, Any]) -> str:
         comparison = packet["template_comparison"]
+        routing = packet["reviewer_routing"]
         signoff = packet["sign_off"]
         lines = [
             "=" * 70,
@@ -175,6 +203,24 @@ class DraftExportService:
         if packet["handoff_summary"]["attention_items"]:
             lines.append("  Attention items")
             lines.extend(f"  - {item}" for item in packet["handoff_summary"]["attention_items"])
+        lines.extend([
+            "",
+            "  Reviewer routing",
+            "  ---------------",
+            f"  Status:    {routing['status']}",
+            f"  Next check: {routing['next_check']}",
+            f"  Material:   {routing['material_change_summary']}",
+            f"  Message:    {routing['reviewer_message']}",
+            "  Material changes",
+        ])
+        lines.extend(f"  - {item}" for item in routing["material_changes"])
+        lines.extend([
+            "  Pass back to author",
+        ])
+        if routing["author_return_items"]:
+            lines.extend(f"  - {item}" for item in routing["author_return_items"])
+        else:
+            lines.append("  - No return items; continue to sign-off.")
         lines.extend([
             "",
             f"  Readiness: {packet['readiness']['label']}",

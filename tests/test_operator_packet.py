@@ -40,6 +40,24 @@ def _sample_flow_with_template_changes():
     )
 
 
+def test_default_filenames_sanitize_path_like_project_names():
+    flow = _sample_flow()
+    flow.project_name = r"..\..\C:\drafts/Packet Project:Reviewer"
+    exporter = DraftExportService()
+
+    draft_name = exporter.default_filename(flow, "docx")
+    packet_name = exporter.default_packet_filename(flow, "json")
+
+    for name in (draft_name, packet_name):
+        assert "\\" not in name
+        assert "/" not in name
+        assert ":" not in name
+        assert ".." not in name
+
+    assert draft_name.endswith(".docx")
+    assert packet_name.endswith(".json")
+
+
 def test_operator_packet_includes_readiness_and_actions():
     flow = _sample_flow()
     report = DraftReportService()
@@ -93,6 +111,22 @@ def test_operator_packet_includes_handoff_summary():
     assert handoff["review_check"]
 
 
+def test_operator_packet_includes_reviewer_routing():
+    flow = _sample_flow_with_template_changes()
+    report = DraftReportService()
+    packet = report.build_operator_packet(flow, preview_bundle=report.build_preview_bundle(flow))
+
+    routing = packet["reviewer_routing"]
+
+    assert routing["label"] == "Reviewer routing"
+    assert routing["status"] in {"Route to reviewer", "Return to author"}
+    assert routing["next_check"]
+    assert routing["material_change_summary"]
+    assert isinstance(routing["material_changes"], list)
+    assert isinstance(routing["author_return_items"], list)
+    assert routing["reviewer_message"]
+
+
 def test_operator_packet_includes_signoff_block():
     flow = _sample_flow()
     report = DraftReportService()
@@ -126,9 +160,11 @@ def test_operator_packet_render_and_export(tmp_path):
     assert os.path.exists(saved_txt)
     assert "operator packet" in exporter.render_operator_packet_markdown(packet).lower()
     assert "author / reviewer handoff" in exporter.render_operator_packet_markdown(packet).lower()
+    assert "reviewer routing" in exporter.render_operator_packet_markdown(packet).lower()
     assert "template comparison" in exporter.render_operator_packet_markdown(packet).lower()
     assert "sign-off" in exporter.render_operator_packet_markdown(packet).lower()
     assert "readiness" in exporter.render_operator_packet_text(packet).lower()
     assert "author / reviewer handoff" in exporter.render_operator_packet_text(packet).lower()
+    assert "reviewer routing" in exporter.render_operator_packet_text(packet).lower()
     assert "template comparison" in exporter.render_operator_packet_text(packet).lower()
     assert "sign-off" in exporter.render_operator_packet_text(packet).lower()

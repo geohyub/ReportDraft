@@ -232,6 +232,39 @@ class DraftReportService:
             "review_check": review_check,
         }
 
+    def _build_reviewer_routing(
+        self,
+        *,
+        comparison: dict[str, Any],
+        blocking_items: list[str],
+        signoff: dict[str, Any],
+    ) -> dict[str, Any]:
+        route_to_reviewer = signoff["can_sign_off"]
+        material_changes = comparison.get("highlights", [])[:3]
+        if not material_changes:
+            material_changes = [comparison["summary"]]
+
+        author_return_items = blocking_items[:3] if blocking_items else []
+        if not author_return_items and not route_to_reviewer:
+            author_return_items = signoff["checklist"][:2]
+
+        next_check = signoff["checklist"][0] if signoff["checklist"] else "Refresh the packet after edits."
+        reviewer_message = (
+            "Confirm the packet is ready for sign-off and record the final approval path."
+            if route_to_reviewer
+            else "Return the packet to the author and clear the blocking items before sign-off."
+        )
+
+        return {
+            "label": "Reviewer routing",
+            "status": "Route to reviewer" if route_to_reviewer else "Return to author",
+            "next_check": next_check,
+            "material_change_summary": comparison["summary"],
+            "material_changes": material_changes,
+            "author_return_items": author_return_items,
+            "reviewer_message": reviewer_message,
+        }
+
     def build_operator_packet(
         self,
         flow,
@@ -302,6 +335,11 @@ class DraftReportService:
             validation_score=validation["score"],
             last_export=export_state,
         )
+        reviewer_routing = self._build_reviewer_routing(
+            comparison=template_comparison,
+            blocking_items=blocking_items,
+            signoff=signoff,
+        )
 
         return {
             "title": "ProcessingReportDraft operator packet",
@@ -322,6 +360,7 @@ class DraftReportService:
             "recommended_next_actions": recommended_actions,
             "last_export": export_state,
             "sign_off": signoff,
+            "reviewer_routing": reviewer_routing,
             "handoff_summary": handoff_summary,
             "summary_cards": self.build_summary_cards(flow),
             "stage_rows": self.build_stage_rows(flow),
