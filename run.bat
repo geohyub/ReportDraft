@@ -19,3 +19,12 @@ echo.
 start http://127.0.0.1:5404
 python main.py --port 5404
 pause
+
+
+if errorlevel 1 (
+    echo.
+    echo [Error] 앱 실행 실패 errorlevel=%errorlevel%
+    echo 원인 확인 후 다시 실행해주세요.
+    pause
+    exit /b %errorlevel%
+)
